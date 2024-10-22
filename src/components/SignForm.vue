@@ -3,7 +3,9 @@
     <input type="text" placeholder="Username" v-model="displayName" required />
     <input type="email" placeholder="Email" v-model="email" required />
     <input type="password" placeholder="Password" v-model="password" required />
-    <button type="submit">Sign up</button>
+    <button type="submit" :disabled="loading">
+      {{ loading ? "Loading..." : "Sign up" }}
+    </button>
     <div class="error">{{ error }}</div>
     <!-- Display error message -->
   </form>
@@ -21,9 +23,33 @@ export default {
     const password = ref("");
     const { signup, error } = useSignup();
     const router = useRouter();
+    const loading = ref(false);
+
+    const validateEmail = (email) => {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      return emailRegex.test(email);
+    };
+
+    const validatePassword = (password) => {
+      const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      return passwordRegex.test(password);
+    };
 
     const handleSubmit = async () => {
+      if (!validateEmail(email.value)) {
+        error.value = "Invalid email";
+        return;
+      }
+
+      if (!validatePassword(password.value)) {
+        error.value = "Invalid password";
+        return;
+      }
+
+      loading.value = true;
       await signup(email.value, password.value, displayName.value);
+      loading.value = false;
       if (!error.value) {
         displayName.value = "";
         email.value = "";
@@ -32,11 +58,14 @@ export default {
       }
     };
 
-    return { displayName, email, password, handleSubmit, error };
+    return { displayName, email, password, handleSubmit, error, loading };
   },
 };
 </script>
 
 <style>
-/* Add any necessary styling here */
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
 </style>
