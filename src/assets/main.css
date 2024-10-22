@@ -1,4 +1,28 @@
-@import './base.css';
+@import "./base.css";
+
+.container {
+  width: 90%;
+  max-width: 980px;
+  margin: 80px auto;
+  border-radius: 20px;
+  box-shadow: 2px 4px 6px rgba(28, 6, 49, 0.1);
+  background-color: rgb(235, 235, 235);
+}
+
+body {
+  background-color: #aa92e0;
+  color: #444;
+}
+
+button {
+  text-decoration: none;
+  background: #5ae4ca;
+  color: white;
+  font-weight: bold;
+  border: 0;
+  border-radius: 20px;
+  padding: 10px 20px;
+}
 
 #app {
   max-width: 1280px;
@@ -13,23 +37,4 @@ a,
   color: hsla(160, 100%, 37%, 1);
   transition: 0.4s;
   padding: 3px;
-}
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
 }
