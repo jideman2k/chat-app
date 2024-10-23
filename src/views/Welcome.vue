@@ -1,7 +1,8 @@
 <script>
 import SignForm from "../components/SignForm.vue";
-import LoginForm from "@/components/LoginForm.vue";
+import LoginForm from "../components/LoginForm.vue";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 export default {
   name: "Welcome",
@@ -12,7 +13,12 @@ export default {
 
   setup() {
     const show = ref(true);
-    return { show };
+    const router = useRouter();
+    const enterChat = () => {
+      router.push({ name: "Chat" });
+    };
+
+    return { show, enterChat };
   },
 };
 </script>
@@ -21,12 +27,12 @@ export default {
   <main class="welcome container">
     <div v-if="show">
       <h2 class="title">Login</h2>
-      <LoginForm />
+      <LoginForm @login="enterChat" />
       <p>Not a member yet? <span @click="show = false">Sign Up</span></p>
     </div>
     <div v-else>
       <h2 class="title">Sign Up</h2>
-      <SignForm />
+      <SignForm @signup="enterChat" />
       <p>Already a member? <span @click="show = !show">Login</span></p>
     </div>
   </main>

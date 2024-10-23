@@ -2,51 +2,39 @@
   <form @submit.prevent="handleSubmit">
     <input type="email" placeholder="Email" v-model="email" required />
     <input type="password" placeholder="Password" v-model="password" required />
-    <div class="error" v-if="v$.email.$error">
-      {{ v$.email.$errors[0].$message }}
-    </div>
-    <div class="error" v-if="v$.password.$error">
-      {{ v$.password.$errors[0].$message }}
-    </div>
-    <button type="submit" :disabled="loading">Sign in</button>
-    <div class="loading" v-if="loading">Loading...</div>
+
+    <button type="submit" :disabled="isPending">Sign in</button>
+    <div class="loading" v-if="isPending">Loading...</div>
     <div class="remember-me">
       <input type="checkbox" v-model="rememberMe" />
       <p>Remember me</p>
     </div>
+    <div v-if="error" class="error">{{ error }}</div>
   </form>
 </template>
 
 <script>
 import { ref } from "vue";
-import { useVuelidate } from "@vuelidate/core";
-import { required, email } from "@vuelidate/validators";
+import { useRouter } from "vue-router";
+
+import useLogin from "../composables/useLogin";
 
 export default {
-  setup() {
+  setup(_, { emit }) {
     const email = ref("");
     const password = ref("");
-    const loading = ref(false);
     const rememberMe = ref(false);
+    const router = useRouter();
 
-    const rules = {
-      email: { required, email },
-      password: { required },
-    };
-
-    const v$ = useVuelidate(rules, { email, password });
+    const { login, error, isPending } = useLogin();
 
     const handleSubmit = async () => {
-      const isFormValid = await v$.value.$validate();
-      if (!isFormValid) return;
-
-      loading.value = true;
-      // Handle form submission here
-      console.log(email.value, password.value, "Form submitted");
-      loading.value = false;
+      await login(email.value, password.value);
+      if (!error.value) {
+        emit("login");
+      }
     };
-
-    return { email, password, handleSubmit, v$, loading, rememberMe };
+    return { email, password, handleSubmit, isPending, error, rememberMe };
   },
 };
 </script>

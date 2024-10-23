@@ -17,7 +17,7 @@ import useSignup from "../composables/useSignup";
 import { useRouter } from "vue-router";
 
 export default {
-  setup() {
+  setup(_, { emit }) {
     const displayName = ref("");
     const email = ref("");
     const password = ref("");
@@ -31,8 +31,8 @@ export default {
     };
 
     const validatePassword = (password) => {
-      const passwordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      // Minimum 8 characters, at least 1 uppercase, 1 lowercase and 1 number
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
       return passwordRegex.test(password);
     };
 
@@ -43,8 +43,8 @@ export default {
       }
 
       if (!validatePassword(password.value)) {
-        error.value = "Invalid password";
-        return;
+        error.value =
+          "Password must be at least 8 characters long and contain at least one uppercase letter.";
       }
 
       loading.value = true;
@@ -54,7 +54,7 @@ export default {
         displayName.value = "";
         email.value = "";
         password.value = "";
-        router.push("/chat");
+        emit("signup");
       }
     };
 
