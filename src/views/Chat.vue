@@ -5,6 +5,9 @@
 </template>
 <script>
 import Navbar from "@/components/Navbar.vue";
+import getUser from "@/composables/getUser";
+import { useRouter } from "vue-router";
+import { watch } from "vue";
 
 export default {
   name: "Chat",
@@ -13,7 +16,15 @@ export default {
   },
 
   setup() {
-    return {};
+    const { user } = getUser();
+    const router = useRouter();
+    watch(user, () => {
+      if (!user.value) {
+        router.push({ name: "Welcome" });
+      }
+    });
+
+    return { user };
   },
 };
 </script>
